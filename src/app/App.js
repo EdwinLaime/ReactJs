@@ -1,5 +1,38 @@
 import React, { Component } from 'react';
 
+import Heading from './Heading';
+import Row from './Row';
+
+class Headings extends Component {
+    render() {
+        return (
+            <thead>
+                <tr>
+                    {
+                        this.props.headings.map((headings, i) => {
+                            return <Heading key={i} headings={headings}/>
+                        })
+                    }
+                </tr>
+            </thead>
+        )
+    }
+}
+
+class Rows extends Component {
+    render() {
+        return (
+            <tbody>
+            {
+                this.props.data.map((row, i) => {
+                    return <Row key={i} change={row} />        
+                })
+            }
+            </tbody>
+        )
+    }
+}
+
 class App extends React.Component {
     render() {
         console.log(this.props.data);
@@ -9,28 +42,8 @@ class App extends React.Component {
             <div className="container p-4">
                 <h1>{this.props.title}</h1>
                 <table className="table table-bordered">
-                    <thead>
-                        <tr>
-                            {
-                                this.props.headings.map((headings, i) => {
-                                    return <th key={i}>{headings}</th>
-                                })
-                            }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            this.props.data.map((row, i) => {
-                                return <tr key={i}>
-                                    <td>{row.when}</td>
-                                    <td>{row.who}</td>
-                                    <td>{row.description}</td>
-
-                                </tr>
-                    
-                            })
-                        }
-                    </tbody>
+                    <Headings headings={this.props.headings} />
+                    <Rows data={this.props.data} />
                 </table>
             </div>
         )
