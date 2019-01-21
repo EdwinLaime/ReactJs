@@ -3,10 +3,12 @@ import React, { Component } from 'react';
 import Heading from './Heading';
 import Row from './Row';
 
+import { format } from 'timeago.js';
+
 class Headings extends Component {
     render() {
         return (
-            <thead>
+            <thead className="table-success">
                 <tr>
                     {
                         this.props.headings.map((headings, i) => {
@@ -34,6 +36,33 @@ class Rows extends Component {
 }
 
 class App extends React.Component {
+
+    constructor() {
+        super();
+        this.state = {
+            data: []
+        };
+    }
+
+    componentDidMount() {
+        setInterval(async () => {
+            const res = await fetch('http://openlibrary.org/recentchanges.json?limit=10');
+            const data = await res.json();
+            const formatData = this.formatData(data);
+            this.setState({data: formatData})
+        }, 1000);    
+    }
+
+    formatData(data) {
+        return data.map((data, i) => {
+            return {
+                "when": format(data.timestamp),
+                "who": data.author.key,
+                "description": data.comment
+            }
+        });
+    }
+ 
     render() {
         console.log(this.props.data);
         console.log(this.props.title);
@@ -43,7 +72,7 @@ class App extends React.Component {
                 <h1>{this.props.title}</h1>
                 <table className="table table-bordered">
                     <Headings headings={this.props.headings} />
-                    <Rows data={this.props.data} />
+                    <Rows data={this.state.data} />
                 </table>
             </div>
         )
